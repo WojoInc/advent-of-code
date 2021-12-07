@@ -12,9 +12,5 @@ with open(argv[1], 'r') as infile:
         if buckets[i] < lowest:
             lowest = buckets[i]
             pos = i
-    fuel = 0
-    # print(buckets)
-    for s in input:
-        fuel += (abs(int(s)-pos))
     print(pos)
-    print(fuel)
+    print(buckets[pos])
