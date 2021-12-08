@@ -1,46 +1,62 @@
 from sys import argv
 
-decode = {18:0,7:1,15:2,16:3,11:4,15:5,19:6,7:7,21:8,17:9}
+decode = {18:0,7:1,15:2,16:3,11:4,15:5,19:6,21:8,17:9}
+
 
 with open(argv[1], 'r') as infile:
     input = infile.readlines()
+    sum = 0
     for line in input:
         segments = {}
         patterns, output = line.split(' | ')
         patterns = patterns.split(' ')
         output = output.strip('\n').split(' ')
-        pat1 = ""
-        pat235 = {}
-        pat4 = ""
-        pat7 = ""
+        segments[1] = set()
+        pat235 = []
+        pat069 = []
+        segments[4] = set()
+        segments[7] = set()
+        segments[8] = set(['a','b','c','d','e','f', 'g'])
         for p in patterns:
             if len(p) == 2:
-                pat1 = p
+                segments[1] = set(p)
             if len(p) == 3:
-                pat7 = p
+                segments[7] = set(p)
             if len(p) == 4:
-                pat4 = p
+                segments[4] = set(p)
             if len(p) == 5:
-                for c in p:
-                    if c not in pat235:
-                        pat235[c] = 1
-                    else:
-                        pat235[c] += 1
-            if "" not in [pat1,pat4,pat7]:
-                break
-        segments[pat7.replace(pat1[0],'').replace(pat1[1],'')] = 0
-        segments[pat1[0]] = {2,5}
-        segments[pat1[1]] = {2,5}
-        segments[pat4.replace(pat1[0],'').replace(pat1[1],'')[0]] = {1,3}
-        segments[pat4.replace(pat1[0],'').replace(pat1[1],'')[1]] = {1,3}
-        max = 0
-        maxk = ""
-        for k,v in pat235.items():
-            if v > max:
-                max = v
-                maxk = k
-        segments[maxk] = 3
-        print("")
+                pat235.append(set(p))
+            if len(p) == 6:
+                pat069.append(set(p))
+        # Find 0,6,9
+        for s in pat069:
+            # of 0,6,9, 6 is the only one in which only 1 segment of 1 can appear
+            if len(segments[1] - s) == 1:
+                segments[6] = s
+            if len(segments[4] - s) == 1:
+                if len(segments[7] - s) == 0:
+                    segments[0] = s
+        pat069.remove(segments[0])
+        pat069.remove(segments[6])
+        segments[9] = pat069[0]
+        # Find 2,3,5
+        for s in pat235:
+            # of 2,3,5, 3 is the one where set difference of 3 - 1 = 3
+            if len(s - segments[1]) == 3:
+                segments[3] = s
+            if len(segments[6] - s) == 1:
+                segments[5] = s
+        pat235.remove(segments[3])
+        pat235.remove(segments[5])
+        segments[2] = pat235[0]
+
+        outstring = ""
+        for s in output:
+            for i in range(10):
+                if set(s) == segments[i]:
+                    outstring += str(i)
+                    break
+        sum += int(outstring)
             
     print(sum)
 
