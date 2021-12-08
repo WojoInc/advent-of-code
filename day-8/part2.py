@@ -1,8 +1,5 @@
 from sys import argv
 
-decode = {18:0,7:1,15:2,16:3,11:4,15:5,19:6,21:8,17:9}
-
-
 with open(argv[1], 'r') as infile:
     input = infile.readlines()
     sum = 0
