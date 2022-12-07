@@ -60,6 +60,7 @@ func main() {
 	f, _ := os.Open(fName)
 	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanRunes)
+	// Change limit here to 4 for part 1
 	q := Queue[rune]{Limit:14, Elem: []rune{}, weights: map[rune]int{}, Weight: 0}
 	for scanner.Scan(){
 		r := []rune(scanner.Text())[0]
